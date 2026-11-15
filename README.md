@@ -1,71 +1,149 @@
-# Item & Purchase Management System
+# PurchaseApp — Item & Purchase Management System
 
-A web application for inventory and purchase management built with **React** and **Django REST Framework** connected to a **MySQL** database.
+A full-stack inventory and purchase management application built with **React 19**, **Vite**, **Bootstrap 5**, and **Django REST Framework 5**. Supports **SQLite** out of the box for zero-configuration setup, as well as **MySQL / MariaDB**.
 
 ---
 
 ## 1. Project Overview & Architecture
 
-This application manages Items, Item Types (Categories), Purchase Orders, and warehouse stock levels. It enforces transactional stock integrity, relational SQL JOIN queries, and backend business rule validations.
+PurchaseApp manages Items, Categories (Item Types), Purchase Orders, and real-time inventory stock levels. It enforces strict transactional integrity, atomic row-level database locking during stock deductions, relational integrity rules, and live SQL JOIN demonstrations.
 
 ### Technology Stack
-- **Frontend:** React 18, Vite, Bootstrap 5, Bootstrap Icons, Axios, React Router v7
-- **Backend:** Python 3.11+, Django 5.2, Django REST Framework 3.14, django-cors-headers
-- **Database:** MySQL 8.x / MariaDB 10.4+, InnoDB storage engine
+- **Frontend:** React 19, Vite 8, Bootstrap 5, Bootstrap Icons, Axios, React Router v7
+- **Backend:** Python 3.10+, Django 5.x, Django REST Framework 3.14+, django-cors-headers
+- **Database:** SQLite 3 (default zero-config) / MySQL 8.x & MariaDB compatible
 
 ```
-PurchaseManagement/
-├── backend/               # Django backend application
-│   ├── config/            # Django settings, URLs, WSGI
-│   ├── inventory/         # Models, Views, Serializers, Services, Tests
+PurchaseApp/
+├── backend/                  # Django backend application
+│   ├── config/               # Settings, routing (URLs), WSGI/ASGI
+│   ├── inventory/            # Models, Views, Serializers, Services, Tests
+│   │   ├── management/       # Commands (e.g. seed_data)
+│   │   ├── migrations/       # Schema migrations
+│   │   ├── models.py         # ItemType, Item, Purchase, PurchaseItem
+│   │   ├── services.py       # Atomic transactions & stock reconciliation
+│   │   └── views.py          # REST API controllers & SQL JOIN views
 │   ├── manage.py
 │   └── requirements.txt
-├── frontend/              # React Vite frontend application
+├── frontend/                 # React + Vite frontend application
 │   ├── src/
-│   │   ├── components/    # Navbar, Sidebar, Modals, StatusBadge, AlertMessage
-│   │   ├── pages/         # Dashboard, ItemList, ItemTypes, Purchases, Stock
-│   │   ├── services/      # Axios API service client
-│   │   ├── App.jsx        # Routing configuration
+│   │   ├── components/       # Modals, Navbar, Sidebar, StatusBadge, Alerts
+│   │   ├── pages/            # Dashboard, Items, ItemTypes, Purchases, Stock
+│   │   ├── services/         # Axios API client
+│   │   ├── App.jsx           # Application routing
 │   │   └── main.jsx
 │   ├── package.json
 │   └── vite.config.js
-├── schema.sql             # MySQL DDL & SQL JOIN queries
-├── api_documentation.md   # REST API reference
-├── postman_collection.json# Postman collection
-└── README.md              # Setup and execution guide
+├── schema.sql                # MySQL DDL & SQL JOIN query reference
+├── api_documentation.md      # Comprehensive REST API reference
+├── postman_collection.json   # Postman API test collection
+├── run_all.bat               # Windows batch launcher (both servers)
+├── start_backend.bat         # Backend batch launcher
+├── start_frontend.bat        # Frontend batch launcher
+└── README.md                 # Project documentation
 ```
 
 ---
 
-## 2. Prerequisites & Software Versions
+## 2. Prerequisites
 
-- **Python:** 3.11.x or higher
-- **Node.js:** 18.x or higher (tested on Node v24.19.0)
+- **Python:** 3.10 or higher
+- **Node.js:** 18.x or higher
 - **npm:** 9.x or higher
-- **MySQL / MariaDB:** MySQL 8.0+ or MariaDB 10.4+ (running on port `3306`)
+- **Git**
 
 ---
 
-## 3. Database Configuration
+## 3. Getting Started & Setup
 
-1. **Start MySQL Server:**
-   Ensure MySQL service or XAMPP MySQL is running on `127.0.0.1:3306`.
+### A. Backend Setup
 
-2. **Create Database:**
-   ```sql
-   CREATE DATABASE IF NOT EXISTS item_purchase_db 
-   CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+1. **Navigate to the backend directory:**
+   ```bash
+   cd backend
    ```
 
-3. **Backend Credentials Configuration:**
-   Credentials are configured in `backend/config/settings.py`:
+2. **Create and activate a Python virtual environment:**
+   - **Linux / macOS:**
+     ```bash
+     python3 -m venv .venv
+     source .venv/bin/activate
+     ```
+   - **Windows:**
+     ```bash
+     python -m venv .venv
+     .venv\Scripts\activate
+     ```
+
+3. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Apply database migrations:**
+   ```bash
+   python manage.py migrate
+   ```
+
+5. *(Optional)* **Seed initial sample data:**
+   Populates sample categories, items (Laptop, Mouse, Chair), and an initial purchase order (`PO-00001`):
+   ```bash
+   python manage.py seed_data
+   ```
+
+6. **Start the Django development server:**
+   ```bash
+   python manage.py runserver 127.0.0.1:8000
+   ```
+   *The backend API will be available at:* **`http://127.0.0.1:8000/api/`**
+
+---
+
+### B. Frontend Setup
+
+1. **Open a new terminal window and navigate to the frontend directory:**
+   ```bash
+   cd frontend
+   ```
+
+2. **Install Node dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Start Vite development server:**
+   ```bash
+   npm run dev
+   ```
+   *The web application will be live at:* **`http://127.0.0.1:5173/`**
+
+---
+
+### C. Quick Launch on Windows
+You can also launch the full stack with the provided batch scripts:
+- Double-click **`run_all.bat`** to start both frontend and backend and open the browser automatically.
+- Or use **`start_backend.bat`** and **`start_frontend.bat`** individually.
+
+---
+
+## 4. Database Configuration
+
+By default, the application runs out of the box with **SQLite** (`backend/db.sqlite3`), requiring zero external database configuration.
+
+### Switching to MySQL / MariaDB (Optional)
+If you wish to run with MySQL:
+1. Create a MySQL database:
+   ```sql
+   CREATE DATABASE IF NOT EXISTS item_purchase_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+   ```
+2. In `backend/config/settings.py`, replace the `DATABASES` setting with:
    ```python
    DATABASES = {
        'default': {
            'ENGINE': 'django.db.backends.mysql',
            'NAME': 'item_purchase_db',
            'USER': 'root',
-           'PASSWORD': '',       # Enter your MySQL password here if set
+           'PASSWORD': 'your_password',
            'HOST': '127.0.0.1',
            'PORT': '3306',
            'OPTIONS': {
@@ -75,178 +153,85 @@ PurchaseManagement/
        }
    }
    ```
+3. Re-run `python manage.py migrate`.
 
 ---
 
-## 4. Backend Setup & Run Instructions
+## 5. Core Features & Business Logic
 
-1. Open PowerShell or Terminal and navigate to the backend directory:
-   ```bash
-   cd C:\prjct\backend
-   ```
+### 1. Item Type Management (`/item-types`)
+- Create, list, and edit item categories.
+- **Deletion Safeguard:** Cannot delete categories currently assigned to any items (`HTTP 409 Conflict`).
 
-2. Install Python dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+### 2. Item Master (`/items`)
+- Add and edit items with Name, Category, Purchase Date, Initial Stock, and Active/Inactive toggle.
+- Filter by Category, Active Status, and Stock Availability (In Stock, Low Stock, Out of Stock).
+- **Integrity Restriction:** Items with past purchase history cannot be deleted (`HTTP 409 Conflict`) to protect ledger integrity. Users are prompted to deactivate instead.
 
-3. Apply database migrations:
-   ```bash
-   python manage.py migrate
-   ```
+### 3. Purchase Order Creation (`/purchases/new`)
+- Generates sequential Order IDs (`PO-00001`, `PO-00002`, ...).
+- Supports multiple line items per purchase order.
+- **Validation:** Inactive items are excluded from selection; orders exceeding available stock are rejected.
+- **Atomic Execution:** Handled via `transaction.atomic()` with `select_for_update()` row-level locks to eliminate race conditions.
 
-4. *(Optional)* Seed initial sample data (matching the assignment specification: Laptop, Mouse, Chair, and Order PO-00001):
-   ```bash
-   python manage.py seed_data
-   ```
+### 4. Stock Adjustment & Reconciliation (`/purchases/:id/edit`)
+- Edits dynamically adjust inventory stock by calculating quantity deltas:
+  - Increasing quantity &rarr; Deducts additional stock.
+  - Decreasing quantity &rarr; Restores difference to warehouse stock.
+  - Removing a line item &rarr; Returns all reserved units to inventory.
 
-5. Run automated unit and integration tests:
-   ```bash
-   python manage.py test inventory
-   ```
+### 5. Audit Immutability (`/purchases`)
+- Complete historical record of all purchase transactions.
+- **Deletion Prohibited:** Purchase order deletion is disabled in the UI and blocked on the backend (`HTTP 405 Method Not Allowed`).
 
-6. Start Django development server:
-   ```bash
-   python manage.py runserver 127.0.0.1:8000
-   ```
-   Backend API will be accessible at: `http://127.0.0.1:8000/api/`
-
----
-
-## 5. Frontend Setup & Run Instructions
-
-1. Open a second PowerShell or Terminal window and navigate to the frontend directory:
-   ```bash
-   cd C:\prjct\frontend
-   ```
-
-2. Install npm dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Start Vite development server:
-   ```bash
-   npm run dev -- --host 127.0.0.1 --port 5173
-   ```
-
-4. Access the web interface in your browser:
-   **`http://127.0.0.1:5173/`**
+### 6. SQL JOIN Demonstration
+Interactive UI and dedicated REST endpoints showing relational SQL JOIN queries:
+- **2-Table JOIN:** Items + Item Types (`GET /api/sql-joins/items/`)
+- **4-Table JOIN:** Purchase + Purchase Items + Items + Item Types (`GET /api/sql-joins/purchase/<order_id>/`)
 
 ---
 
-## 6. Core Business Flow & Verification
-
-### A. Item Type Management (`/item-types`)
-- Create categories (Electronics, Furniture, Stationery, Grocery, Clothing).
-- Edit category names.
-- **Delete restriction:** Item types associated with items cannot be deleted (`409 Conflict`).
-
-### B. Item Master (`/items`)
-- Add items with Name, Category, Purchase Date, Initial Stock, and Active/Inactive toggle.
-- Search by name and filter by Category, Active Status, and Stock Availability.
-- **Delete restriction:** If an item has ever been purchased, physical deletion is prohibited (`409 Conflict`) to protect transaction history; users are prompted to deactivate it.
-
-### C. Purchase Order Creation (`/purchases/new`)
-- Automatically generates sequential Order IDs (`PO-00001`, `PO-00002`).
-- Select multiple items in a single purchase.
-- **Active validation:** Inactive items are blocked from selection.
-- **Stock validation:** Quantities exceeding warehouse stock are rejected.
-- **Atomic transaction:** All items, purchase lines, and stock deductions execute inside `transaction.atomic()` with `select_for_update()` row locking.
-
-### D. Stock Management & Real-Time Availability (`/stock`)
-- **In Stock:** Stock > 5 (or > 0)
-- **Low Stock:** Stock &le; 5 units
-- **Out of Stock:** Stock = 0 (purchases blocked)
-- Non-negative stock enforced at both ORM and MySQL table constraint level (`CHECK (stock_available >= 0)`).
-
-### E. Purchase Update & Stock Reconciliation (`/purchases/:id/edit`)
-- Reconciles warehouse stock based on the quantity delta:
-  - `old = 3`, `new = 5` &rarr; deducts additional 2 units.
-  - `old = 5`, `new = 2` &rarr; returns 3 units back to inventory.
-  - Removing a line item &rarr; returns all units to inventory.
-  - Adding a new line item &rarr; deducts units from inventory.
-
-### F. Purchase History & Audit Immutability (`/purchases`)
-- Complete historical ledger of purchases.
-- **Purchase Deletion Prohibited:** No delete button exists on the frontend, and the backend returns `405 Method Not Allowed` for any DELETE request on purchases.
-
----
-
-## 7. SQL JOIN Requirement Demonstration
-
-The application demonstrates relational SQL JOIN operations as required:
-
-### Query 1: Item + Item Type
-```sql
-SELECT 
-    i.id, 
-    i.name, 
-    it.type_name, 
-    i.purchase_date, 
-    i.stock_available, 
-    i.active 
-FROM items i 
-JOIN item_types it ON i.item_type_id = it.id;
-```
-*API Endpoint:* `GET /api/sql-joins/items/`
-
-### Query 2: Purchase + Purchase Items + Items + Item Types (4-Table JOIN)
-```sql
-SELECT 
-    p.order_id, 
-    p.purchase_date, 
-    i.id AS item_id, 
-    i.name AS item_name, 
-    it.type_name, 
-    pi.quantity 
-FROM purchases p 
-JOIN purchase_items pi ON p.id = pi.purchase_id 
-JOIN items i ON pi.item_id = i.id 
-JOIN item_types it ON i.item_type_id = it.id 
-WHERE p.order_id = 'PO-00001';
-```
-*API Endpoint:* `GET /api/sql-joins/purchase/<order_id>/`
-
-*Interactive UI:* Navigate to **SQL JOIN Demo** in the web app to execute and inspect these live queries.
-
----
-
-## 8. Summary of REST API Endpoints
+## 6. REST API Endpoints
 
 | Area | Method | Endpoint | Description |
 | :--- | :--- | :--- | :--- |
 | **Item Types** | `GET` | `/api/item-types/` | List all item categories |
 | | `POST` | `/api/item-types/` | Create a category |
-| | `PUT` | `/api/item-types/<id>/` | Update a category |
-| | `DELETE`| `/api/item-types/<id>/` | Delete (rejected if items exist) |
+| | `GET` | `/api/item-types/<id>/` | Category detail |
+| | `PUT` | `/api/item-types/<id>/` | Update category |
+| | `DELETE`| `/api/item-types/<id>/` | Delete (blocked if items exist) |
 | **Items** | `GET` | `/api/items/` | List items with search/filter |
-| | `POST` | `/api/items/` | Create an item |
-| | `GET` | `/api/items/<id>/` | Item details |
+| | `POST` | `/api/items/` | Create a new item |
+| | `GET` | `/api/items/<id>/` | Item detail |
 | | `PUT` | `/api/items/<id>/` | Update item |
-| | `DELETE`| `/api/items/<id>/` | Delete (rejected if in history) |
+| | `DELETE`| `/api/items/<id>/` | Delete (blocked if in purchase history) |
 | **Purchases** | `GET` | `/api/purchases/` | List historical purchases |
-| | `POST` | `/api/purchases/` | Create purchase (atomic stock deduction)|
-| | `GET` | `/api/purchases/<id>/` | Purchase details |
-| | `PUT` | `/api/purchases/<id>/` | Update purchase (stock delta adjustment) |
-| | `DELETE`| `/api/purchases/<id>/` | **Strictly Prohibited (`405 Method Not Allowed`)** |
+| | `POST` | `/api/purchases/` | Create purchase order (atomic stock deduction) |
+| | `GET` | `/api/purchases/<id>/` | Purchase order detail |
+| | `PUT` | `/api/purchases/<id>/` | Update purchase order (stock reconciliation) |
+| | `DELETE`| `/api/purchases/<id>/` | **Prohibited (`HTTP 405 Method Not Allowed`)** |
 | | `GET` | `/api/purchases/next-order-id/` | Fetch next sequential Order ID |
-| **Dashboard** | `GET` | `/api/dashboard/stats/` | Summary metrics & KPIs |
+| **Dashboard** | `GET` | `/api/dashboard/stats/` | Inventory summary metrics & KPIs |
+| **SQL Joins** | `GET` | `/api/sql-joins/items/` | Relational 2-table JOIN result |
+| | `GET` | `/api/sql-joins/purchase/<order_id>/` | Relational 4-table JOIN result |
 
 ---
 
-## 9. Evaluation Checklist Verification
+## 7. Testing & Quality Checks
 
-- [x] Item Type CRUD implemented with deletion protection
-- [x] Item Master CRUD with search, category filter, and active/inactive status
-- [x] Item deletion prevented when item has purchase history
-- [x] Inactive items blocked from new purchase selection
-- [x] Multiple items supported in a single purchase order
-- [x] Backend stock validation prevents negative stock
-- [x] Atomic transactions (`transaction.atomic`) with row locking
-- [x] Stock deducted immediately upon successful purchase
-- [x] Purchase updates accurately reconcile stock differences
-- [x] Purchase deletion strictly prohibited (returns HTTP 405)
-- [x] SQL JOIN queries implemented in database schema and ORM queries
-- [x] Clean, responsive Bootstrap 5 UI
-- [x] Automated unit and integration tests passing (`python manage.py test`)
+### Run Backend Unit & Integration Tests:
+```bash
+cd backend
+python manage.py test inventory
+```
+
+### Run Frontend Linter:
+```bash
+cd frontend
+npm run lint
+```
+
+---
+
+## 8. License
+This project is open source and available under the [MIT License](LICENSE).
