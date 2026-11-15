@@ -183,27 +183,6 @@
       ]
     },
     {
-      "name": "SQL Joins",
-      "item": [
-        {
-          "name": "Items + Item Types JOIN",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": { "raw": "{{baseUrl}}/sql-joins/items/", "host": ["{{baseUrl}}"], "path": ["sql-joins", "items", ""] }
-          }
-        },
-        {
-          "name": "Purchase 4-Table JOIN",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": { "raw": "{{baseUrl}}/sql-joins/purchase/PO-00001/", "host": ["{{baseUrl}}"], "path": ["sql-joins", "purchase", "PO-00001", ""] }
-          }
-        }
-      ]
-    },
-    {
       "name": "Dashboard",
       "item": [
         {
