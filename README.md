@@ -184,10 +184,6 @@ If you wish to run with MySQL:
 - Complete historical record of all purchase transactions.
 - **Deletion Prohibited:** Purchase order deletion is disabled in the UI and blocked on the backend (`HTTP 405 Method Not Allowed`).
 
-### 6. SQL JOIN Demonstration
-Interactive UI and dedicated REST endpoints showing relational SQL JOIN queries:
-- **2-Table JOIN:** Items + Item Types (`GET /api/sql-joins/items/`)
-- **4-Table JOIN:** Purchase + Purchase Items + Items + Item Types (`GET /api/sql-joins/purchase/<order_id>/`)
 
 ---
 
@@ -212,8 +208,6 @@ Interactive UI and dedicated REST endpoints showing relational SQL JOIN queries:
 | | `DELETE`| `/api/purchases/<id>/` | **Prohibited (`HTTP 405 Method Not Allowed`)** |
 | | `GET` | `/api/purchases/next-order-id/` | Fetch next sequential Order ID |
 | **Dashboard** | `GET` | `/api/dashboard/stats/` | Inventory summary metrics & KPIs |
-| **SQL Joins** | `GET` | `/api/sql-joins/items/` | Relational 2-table JOIN result |
-| | `GET` | `/api/sql-joins/purchase/<order_id>/` | Relational 4-table JOIN result |
 
 ---
 
