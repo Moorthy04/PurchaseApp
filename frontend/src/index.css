@@ -1,0 +1,59 @@
+:root {
+  --bs-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif;
+  --bs-body-font-family: var(--bs-font-sans-serif);
+  --bs-body-bg: #f8fafc;
+  --bs-body-color: #1e293b;
+}
+
+body {
+  margin: 0;
+  font-family: var(--bs-body-font-family);
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Card Subtle Shadows */
+.card {
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+}
+
+/* Table Design */
+.table {
+  --bs-table-bg: transparent;
+  --bs-table-border-color: #f1f5f9;
+}
+
+.table th {
+  font-weight: 600;
+  color: #64748b;
+  border-bottom-width: 1px;
+}
+
+.table td {
+  border-bottom-width: 1px;
+  vertical-align: middle;
+}
+
+/* Sidebar Links */
+.hover-bg-light:hover {
+  background-color: #f1f5f9;
+  color: #0f172a !important;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

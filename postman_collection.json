@@ -1,0 +1,220 @@
+{
+  "info": {
+    "_postman_id": "c1f2e3d4-b5a6-4789-9123-abcdef012345",
+    "name": "Item & Purchase Management System API",
+    "description": "Collection of all REST API endpoints for Item & Purchase Management System (Django DRF + MySQL).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8000/api",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Item Types",
+      "item": [
+        {
+          "name": "Get All Item Types",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/item-types/", "host": ["{{baseUrl}}"], "path": ["item-types", ""] }
+          }
+        },
+        {
+          "name": "Create Item Type",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type_name\": \"Stationery\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/item-types/", "host": ["{{baseUrl}}"], "path": ["item-types", ""] }
+          }
+        },
+        {
+          "name": "Update Item Type",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type_name\": \"Office Stationery\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/item-types/1/", "host": ["{{baseUrl}}"], "path": ["item-types", "1", ""] }
+          }
+        },
+        {
+          "name": "Delete Item Type (Conflict if items exist)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/item-types/1/", "host": ["{{baseUrl}}"], "path": ["item-types", "1", ""] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Items",
+      "item": [
+        {
+          "name": "Get All Items (with filters)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/items/?search=&item_type=&active=&availability=",
+              "host": ["{{baseUrl}}"],
+              "path": ["items", ""],
+              "query": [
+                { "key": "search", "value": "" },
+                { "key": "item_type", "value": "" },
+                { "key": "active", "value": "" },
+                { "key": "availability", "value": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Item By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/items/1/", "host": ["{{baseUrl}}"], "path": ["items", "1", ""] }
+          }
+        },
+        {
+          "name": "Create Item",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Wireless Mouse\",\n  \"item_type_id\": 1,\n  \"purchase_date\": \"2026-08-25\",\n  \"stock_available\": 20,\n  \"active\": true\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/items/", "host": ["{{baseUrl}}"], "path": ["items", ""] }
+          }
+        },
+        {
+          "name": "Update Item",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Wireless Mouse V2\",\n  \"item_type_id\": 1,\n  \"purchase_date\": \"2026-08-25\",\n  \"stock_available\": 25,\n  \"active\": true\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/items/1/", "host": ["{{baseUrl}}"], "path": ["items", "1", ""] }
+          }
+        },
+        {
+          "name": "Delete Item (Conflict if used in purchase)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/items/1/", "host": ["{{baseUrl}}"], "path": ["items", "1", ""] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Purchases",
+      "item": [
+        {
+          "name": "Get Next Order ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/purchases/next-order-id/", "host": ["{{baseUrl}}"], "path": ["purchases", "next-order-id", ""] }
+          }
+        },
+        {
+          "name": "Get All Purchases",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/purchases/", "host": ["{{baseUrl}}"], "path": ["purchases", ""] }
+          }
+        },
+        {
+          "name": "Get Purchase By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/purchases/1/", "host": ["{{baseUrl}}"], "path": ["purchases", "1", ""] }
+          }
+        },
+        {
+          "name": "Create Purchase (Atomic with stock deduction)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"order_id\": \"PO-00002\",\n  \"purchase_date\": \"2026-08-26\",\n  \"items\": [\n    {\n      \"item_id\": 1,\n      \"quantity\": 2\n    },\n    {\n      \"item_id\": 2,\n      \"quantity\": 4\n    }\n  ]\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/purchases/", "host": ["{{baseUrl}}"], "path": ["purchases", ""] }
+          }
+        },
+        {
+          "name": "Update Purchase (Atomic with stock adjustment)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"purchase_date\": \"2026-08-26\",\n  \"items\": [\n    {\n      \"item_id\": 1,\n      \"quantity\": 3\n    }\n  ]\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/purchases/1/", "host": ["{{baseUrl}}"], "path": ["purchases", "1", ""] }
+          }
+        },
+        {
+          "name": "Delete Purchase Attempt (Strictly Prohibited - 405 Method Not Allowed)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/purchases/1/", "host": ["{{baseUrl}}"], "path": ["purchases", "1", ""] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "SQL Joins",
+      "item": [
+        {
+          "name": "Items + Item Types JOIN",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/sql-joins/items/", "host": ["{{baseUrl}}"], "path": ["sql-joins", "items", ""] }
+          }
+        },
+        {
+          "name": "Purchase 4-Table JOIN",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/sql-joins/purchase/PO-00001/", "host": ["{{baseUrl}}"], "path": ["sql-joins", "purchase", "PO-00001", ""] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Get Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/dashboard/stats/", "host": ["{{baseUrl}}"], "path": ["dashboard", "stats", ""] }
+          }
+        }
+      ]
+    }
+  ]
+}
